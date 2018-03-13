@@ -1,26 +1,38 @@
 package gui;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
+import logic.HuffmanEncoded;
+import sun.security.util.BitArray;
 
-public class HuffmanApplication  extends Application{
-    @Override
-    public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("gui/Woorden.fxml"));
+public class HuffmanApplication {
+    private static int alphabetSize = 256;
+    //Ascii
 
-        Scene scene = new Scene(root);
+    public HuffmanEncoded compress(String text) {
+        int[] freq = BuildTable(text);
 
-        stage.setScene(scene);
-        stage.show();
+
+        return null;
     }
 
-    /**
-     * @param args the command line arguments
-     */
+    public String decompress(HuffmanEncoded result){
+        return null;
+    }
+
+    public static int[] BuildTable(String text){
+        int[] freq = new int[alphabetSize];
+        for(char character : text.toCharArray()){
+            freq[character]++;
+        }
+        return freq;
+    }
+
     public static void main(String[] args) {
-        launch(args);
+        String test = "In deze opdracht komen de volgende onderwerpen aan bod";
+        int[] testMethode = BuildTable(test);
+        for (int i : testMethode){
+            System.out.println(i);
+        }
     }
 }
