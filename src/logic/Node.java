@@ -1,6 +1,6 @@
 package logic;
 
-public class Node implements Comparable<Node>{
+public class Node implements Comparable<Node> {
     private char character;
     private int frequency;
     private Node left;
@@ -13,14 +13,31 @@ public class Node implements Comparable<Node>{
         this.right = right;
     }
 
-    boolean isLeaf() {
+    public char getCharacter() {
+        return character;
+    }
+
+    public int getFrequency() {
+        return frequency;
+    }
+
+    public Node getLeft() {
+        return left;
+    }
+
+    public Node getRight() {
+        return right;
+    }
+
+
+    public boolean isLeaf() {
         return this.left == null && this.right == null;
     }
 
     @Override
     public int compareTo(Node o) {
         int frequencyCompare = Integer.compare(this.frequency, o.frequency);
-        if (frequencyCompare != 0){
+        if (frequencyCompare != 0) {
             return frequencyCompare;
         }
         return Integer.compare(this.character, o.character);
