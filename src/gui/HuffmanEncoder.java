@@ -1,31 +1,28 @@
 package gui;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
-import logic.HuffmanEncoded;
+import logic.HuffmanEncodedResult;
 import logic.Node;
-import sun.security.util.BitArray;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-public class HuffmanApplication {
+public class HuffmanEncoder {
     private static int alphabetSize = 256;
     //Ascii
     //Why the size. To support all the ascii characters even if not used.
 
-    public HuffmanEncoded compress(String text) {
+    public HuffmanEncodedResult compress(String text) {
         int[] frequency = BuildFrequencyTable(text);
         Node root = buildTree(frequency);
         Map<Character, String> lookupTable = buildLookUpTable(root);
 
-        return new HuffmanEncoded(generateData(text, lookupTable), root);
+        return new HuffmanEncodedResult(generateData(text, lookupTable), root);
     }
 
     private static String generateData(String text, Map<Character, String> lookupTable) {
         StringBuilder builder = new StringBuilder();
-        for(char character : text.toCharArray()){
+        for (char character : text.toCharArray()) {
             builder.append(lookupTable.get(character));
         }
         return builder.toString();
@@ -76,20 +73,11 @@ public class HuffmanApplication {
         }
     }
 
-
-
-    public String decompress(HuffmanEncoded result) {
-        return null;
-    }
-
-
-
     public static void main(String[] args) {
         String test = "In deze opdracht., komen de : volgende ? onderwerpen aan bod";
-        int[] i = BuildFrequencyTable(test);
-        Node node = buildTree(i);
-        Map<Character, String> lookup = buildLookUpTable(node);
-        System.out.println(generateData(test, lookup));
+        HuffmanEncoder encoder = new HuffmanEncoder();
+        HuffmanEncodedResult result = encoder.compress(test);
 
+        System.out.println("encoded: " + result.getEncodedData());
     }
 }
