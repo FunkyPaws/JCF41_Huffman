@@ -3,6 +3,7 @@ package gui;
 import logic.HuffmanEncodedResult;
 import logic.Node;
 
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -12,14 +13,45 @@ public class HuffmanEncoder {
     //Ascii
     //Why the size. To support all the ascii characters even if not used.
 
-    public HuffmanEncodedResult compress(String text) {
+    public void compress(String text, File fileLocation) throws IOException {
         int[] frequency = BuildFrequencyTable(text);
         Node root = buildTree(frequency);
         Map<Character, String> lookupTable = buildLookUpTable(root);
+        HuffmanEncodedResult result = new HuffmanEncodedResult(generateData(text, lookupTable), root);
 
-        return new HuffmanEncodedResult(generateData(text, lookupTable), root);
+        // add write
+        HuffmanEncoder encoder = new HuffmanEncoder();
+        encoder.writeToFile(result, fileLocation);
     }
 
+    public String decompress(File filename) throws IOException {
+        HuffmanEncoder encoder = new HuffmanEncoder();
+        HuffmanEncodedResult result = encoder.readFromFile(filename);
+
+        StringBuilder decompressBuilder = new StringBuilder();
+
+        Node current = result.getRoot();
+
+        int i = 0;
+        while (i < result.getEncodedData().length()) {
+            while (!current.isLeaf()) {
+                char bit = result.getEncodedData().charAt(i);
+                if (bit == '1') {
+                    current = current.getRight();
+                } else if (bit == '0') {
+                    current = current.getLeft();
+                } else {
+                    throw new IllegalArgumentException("Invalid bit in message " + bit);
+                }
+                i++;
+            }
+            decompressBuilder.append(current.getCharacter());
+            current = result.getRoot();
+        }
+        return decompressBuilder.toString();
+    }
+
+    //build tree
     private static String generateData(String text, Map<Character, String> lookupTable) {
         StringBuilder builder = new StringBuilder();
         for (char character : text.toCharArray()) {
@@ -73,11 +105,33 @@ public class HuffmanEncoder {
         }
     }
 
-    public static void main(String[] args) {
+
+    //read and write
+    public void writeToFile(HuffmanEncodedResult result, File file) throws IOException {
+
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(file))) {
+            objectOutputStream.writeObject(result);
+        }
+    }
+
+    public HuffmanEncodedResult readFromFile(File filename) throws IOException {
+        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(filename))) {
+            Object object = objectInputStream.readObject();
+            if (object instanceof HuffmanEncodedResult) {
+                return (HuffmanEncodedResult) object;
+            }
+        } catch (ClassNotFoundException ignored) {
+
+        }
+        throw new InvalidClassException("Incorrect object found, object was not an instance of HuffmanEncodedResult");
+    }
+
+    //test area
+    public static void main(String[] args) throws IOException {
         String test = "In deze opdracht., komen de : volgende ? onderwerpen aan bod";
         HuffmanEncoder encoder = new HuffmanEncoder();
-        HuffmanEncodedResult result = encoder.compress(test);
-
-        System.out.println("encoded: " + result.getEncodedData());
+        //encoder.compress(test, new File("TestFileHuffman"));
+        String message = encoder.decompress(new File("TestFileHuffman"));
+        System.out.println(message);
     }
 }

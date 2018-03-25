@@ -1,6 +1,8 @@
 package logic;
 
-public class HuffmanEncodedResult {
+import java.io.Serializable;
+
+public class HuffmanEncodedResult implements Serializable {
 
     private String encodedData;
     private Node root;
