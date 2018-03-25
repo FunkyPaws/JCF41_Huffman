@@ -31,6 +31,7 @@ public class Node implements Comparable<Node> {
 
 
     public boolean isLeaf() {
+        //if there are no left or right children means its a leaf.
         return this.left == null && this.right == null;
     }
 
