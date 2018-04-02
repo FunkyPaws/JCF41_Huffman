@@ -68,12 +68,30 @@ public class PerformanceTest {
             allTimesMil[i] = System.nanoTime() - beginTime;
         }
         long avgMilTime = averageTestTime(allTimesMil);
-        LOGGER.log(Level.INFO, "10k encode average time in nanoseconds: " + avgMilTime);
+        LOGGER.log(Level.INFO, "mil encode average time in nanoseconds: " + avgMilTime);
     }
 
     @Test
     public void testDecode() throws Exception {
 
-    }
+        //10k test
+        Long[] allTimes10k = new Long[testAmount];
+        for (int i = 0; testAmount > i; i++) {
+            long beginTime = System.nanoTime();
+            iEncode.decompress(new File("10k"));
+            allTimes10k[i] = System.nanoTime() - beginTime;
+        }
+        long avg10kTime = averageTestTime(allTimes10k);
+        LOGGER.log(Level.INFO, "10k decode average time in nanoseconds: " + avg10kTime);
 
+        //mil test
+        Long[] allTimesMil = new Long[testAmount];
+        for (int i = 0; testAmount > i; i++) {
+            long beginTime = System.nanoTime();
+            iEncode.decompress(new File("mil"));
+            allTimesMil[i] = System.nanoTime() - beginTime;
+        }
+        long avgMilTime = averageTestTime(allTimesMil);
+        LOGGER.log(Level.INFO, "mil decode average time in nanoseconds: " + avgMilTime);
+    }
 }
