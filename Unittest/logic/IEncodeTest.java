@@ -6,11 +6,10 @@ import static org.junit.Assert.*;
 
 public class IEncodeTest {
     @Test
-    public void compress() throws Exception {
+    public void compress1() throws Exception {
     }
 
     @Test
-    public void decompress() throws Exception {
+    public void decompress1() throws Exception {
     }
-
 }
