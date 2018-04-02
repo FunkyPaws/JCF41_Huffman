@@ -137,8 +137,8 @@ public class HuffmanManager implements IEncode {
         String test = "In deze opdracht., komen de : volgende ? onderwerpen aan bod";
 
 
-        new HuffmanManager().compress(test, new File("TestFileHuffman"));
-        //String message = encoder.decompress(new File("TestFileHuffman"));
-        //System.out.println(message);
+        //new HuffmanManager().compress(test, new File("TestFileHuffman"));
+        String message = new HuffmanManager().decompress(new File("TestFileHuffman"));
+        System.out.println(message);
     }
 }

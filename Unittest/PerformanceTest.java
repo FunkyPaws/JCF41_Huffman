@@ -1,41 +1,30 @@
+import logic.HuffmanManager;
+import logic.IEncode;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.util.PrimitiveIterator;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PerformanceTest {
 
-   // i interface
+    private IEncode iEncode;
     private String string10k;
     private String string1m;
 
+    private static final int testAmount = 4;
+
+    private static final Logger LOGGER = Logger.getLogger(PerformanceTest.class.getName());
+
     @Before
     public void setUp() throws Exception {
+        iEncode = new HuffmanManager();
         string10k = generateString(10000);
         string1m = generateString(1000000);
     }
-
-    @Test
-    public void getSorteerAction() throws Exception {
-//        long startTime = System.nanoTime();
-//        manager.splitString(DEFAULT_TEXT);
-//        long resultTime = System.nanoTime() - startTime;
-//        String logMessage = String.format("getSplitText - Time measured: %d nanoseconds", resultTime);
-//        logger.log(Level.INFO, logMessage);
-//
-//        long startTime10k = System.nanoTime();
-//        manager.splitString(string10k);
-//        long resultTime10k = System.nanoTime() - startTime10k;
-//        String logMessage10k = String.format("getSplitText 10k - Time measured: %d nanoseconds", resultTime10k);
-//        logger.log(Level.INFO, logMessage10k);
-//
-//        long startTime1m = System.nanoTime();
-//        manager.splitString(string1m);
-//        long resultTime1m = System.nanoTime() - startTime1m;
-//        String logMessage1m = String.format("getSplitText 1m - Time measured: %d nanoseconds", resultTime1m);
-//        logger.log(Level.INFO, logMessage1m);
-    }
-
 
     private String generateString(int numberOfWords) {
         Random rnd = new Random();
@@ -49,4 +38,42 @@ public class PerformanceTest {
         }
         return sb.toString();
     }
+
+    private long averageTestTime(Long[] times) {
+        long time = 0;
+        for (Long aLong : times) {
+            time += aLong;
+        }
+        return time / times.length;
+    }
+
+    @Test
+    public void testEncode() throws Exception {
+
+        //10k test
+        Long[] allTimes10k = new Long[testAmount];
+        for (int i = 0; testAmount > i; i++) {
+            long beginTime = System.nanoTime();
+            iEncode.compress(string10k, new File("10k"));
+            allTimes10k[i] = System.nanoTime() - beginTime;
+        }
+        long avg10kTime = averageTestTime(allTimes10k);
+        LOGGER.log(Level.INFO, "10k encode average time in nanoseconds: " + avg10kTime);
+
+        //mil test
+        Long[] allTimesMil = new Long[testAmount];
+        for (int i = 0; testAmount > i; i++) {
+            long beginTime = System.nanoTime();
+            iEncode.compress(string1m, new File("mil"));
+            allTimesMil[i] = System.nanoTime() - beginTime;
+        }
+        long avgMilTime = averageTestTime(allTimesMil);
+        LOGGER.log(Level.INFO, "10k encode average time in nanoseconds: " + avgMilTime);
+    }
+
+    @Test
+    public void testDecode() throws Exception {
+
+    }
+
 }
