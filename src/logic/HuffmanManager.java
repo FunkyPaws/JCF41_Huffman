@@ -1,18 +1,16 @@
 package logic;
 
 import java.io.*;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-public class HuffmanManager  implements IEncode{
+public class HuffmanManager implements IEncode {
 
     private static int alphabetSize = 256;
     //Ascii
     //Why the size. To support all the ascii characters even if not used.
-
-    IEncode encoder = new HuffmanManager();
-
 
     //compress and decompress
     @Override
@@ -23,7 +21,6 @@ public class HuffmanManager  implements IEncode{
         HuffmanEncodedResult result = new HuffmanEncodedResult(generateData(text, lookupTable), root);
 
         // add write
-
         writeToFile(result, fileLocation);
     }
 
@@ -31,38 +28,41 @@ public class HuffmanManager  implements IEncode{
     public String decompress(File filename) throws IOException {
         IEncode encoder = new HuffmanManager();
         HuffmanEncodedResult result = readFromFile(filename);
-
         StringBuilder decompressBuilder = new StringBuilder();
+        BitSet set = result.getEncodedData();
 
-        Node current = result.getRoot();
-
-        int i = 0;
-        while (i < result.getEncodedData().length()) {
+        for (int i = 0; set.length() - 1 > i; ) {
+            Node current = result.getRoot();
             while (!current.isLeaf()) {
-                char bit = result.getEncodedData().charAt(i);
-                if (bit == '1') {
+                if (set.get(i)) {
                     current = current.getRight();
-                } else if (bit == '0') {
-                    current = current.getLeft();
                 } else {
-                    throw new IllegalArgumentException("Invalid bit in message " + bit);
+                    current = current.getLeft();
                 }
                 i++;
             }
             decompressBuilder.append(current.getCharacter());
-            current = result.getRoot();
         }
         return decompressBuilder.toString();
     }
 
 
     //build tree
-    private static String generateData(String text, Map<Character, String> lookupTable) {
-        StringBuilder builder = new StringBuilder();
+    private static BitSet generateData(String text, Map<Character, String> lookupTable) {
+        int postion = 0;
+        BitSet bitSet = new BitSet();
         for (char character : text.toCharArray()) {
-            builder.append(lookupTable.get(character));
+            String s = lookupTable.get(character);
+            for (char c : s.toCharArray()) {
+                if (c == '1') {
+                    // alles is standaard een 0 in een bitset
+                    bitSet.set(postion);
+                }
+                postion++;
+            }
         }
-        return builder.toString();
+        bitSet.set(postion);
+        return bitSet;
     }
 
     private static int[] BuildFrequencyTable(String text) {
@@ -135,10 +135,10 @@ public class HuffmanManager  implements IEncode{
     //test area
     public static void main(String[] args) throws IOException {
         String test = "In deze opdracht., komen de : volgende ? onderwerpen aan bod";
-        IEncode encoder = new HuffmanManager();
 
-        //encoder.compress(test, new File("TestFileHuffman"));
-        String message = encoder.decompress(new File("TestFileHuffman"));
-        System.out.println(message);
+
+        new HuffmanManager().compress(test, new File("TestFileHuffman"));
+        //String message = encoder.decompress(new File("TestFileHuffman"));
+        //System.out.println(message);
     }
 }

@@ -1,18 +1,19 @@
 package logic;
 
 import java.io.Serializable;
+import java.util.BitSet;
 
 public class HuffmanEncodedResult implements Serializable {
 
-    private String encodedData;
+    private BitSet encodedData;
     private Node root;
 
-    public HuffmanEncodedResult(String encodedData, Node root) {
+    public HuffmanEncodedResult(BitSet encodedData, Node root) {
         this.encodedData = encodedData;
         this.root = root;
     }
 
-    public String getEncodedData() {
+    public BitSet getEncodedData() {
         return encodedData;
     }
 
