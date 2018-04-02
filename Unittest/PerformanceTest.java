@@ -1,4 +1,3 @@
-import logic.ILogic;
 import org.junit.Before;
 
 import java.util.Random;
