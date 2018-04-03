@@ -15,7 +15,7 @@ public class HuffmanManager implements IEncode {
     //compress and decompress
     @Override
     public void compress(String text, File fileLocation) throws IOException {
-        int[] frequency = BuildFrequencyTable(text);
+        int[] frequency = buildFrequencyTable(text);
         Node root = buildTree(frequency);
         Map<Character, String> lookupTable = buildLookUpTable(root);
         HuffmanEncodedResult result = new HuffmanEncodedResult(generateData(text, lookupTable), root);
@@ -26,7 +26,6 @@ public class HuffmanManager implements IEncode {
 
     @Override
     public String decompress(File filename) throws IOException {
-        IEncode encoder = new HuffmanManager();
         HuffmanEncodedResult result = readFromFile(filename);
         StringBuilder decompressBuilder = new StringBuilder();
         BitSet set = result.getEncodedData();
@@ -65,7 +64,7 @@ public class HuffmanManager implements IEncode {
         return bitSet;
     }
 
-    private static int[] BuildFrequencyTable(String text) {
+    private static int[] buildFrequencyTable(String text) {
         int[] frequency = new int[alphabetSize];
         for (char character : text.toCharArray()) {
             frequency[character]++;
